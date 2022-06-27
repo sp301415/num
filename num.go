@@ -146,16 +146,13 @@ func GCD[T constraints.Integer](x, y T) T {
 // If x == 0 and y != 0, g equals |y|.
 //
 // If x != 0 and y == 0, g equals |x|.
-func XGCD[T constraints.Integer](x, y T) (T, T, T) {
-	x = Abs(x)
-	y = Abs(y)
-
+func XGCD[T constraints.Integer](x, y T) (T, int, int) {
 	if x == 0 && y == 0 {
 		return 0, 0, 0
 	} else if x == 0 {
-		return 0, 0, T(Sign(y))
+		return Abs(y), 0, Sign(y)
 	} else if y == 0 {
-		return 0, T(Sign(x)), 0
+		return Abs(x), Sign(x), 0
 	}
 
 	// Taken from WikiPedia: https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#Pseudocode
@@ -170,7 +167,7 @@ func XGCD[T constraints.Integer](x, y T) (T, T, T) {
 		oldt, t = t, oldt-q*t
 	}
 
-	return oldr, olds, oldt
+	return oldr, int(olds), int(oldt)
 }
 
 // Max returns the larger integer between x and y.
