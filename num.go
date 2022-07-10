@@ -55,7 +55,7 @@ func CmpAbs[T constraints.Integer](x, y T) int {
 // Pow returns x**y. If x == y == 0 or y < 0, a runtime panic occurs.
 func Pow[T constraints.Integer](x, y T) T {
 	if x == 0 && y == 0 {
-		panic("0**0 is not defined")
+		return 1
 	}
 	if y < 0 {
 		panic("negative exponent")
@@ -85,22 +85,22 @@ func Pow[T constraints.Integer](x, y T) T {
 // If m == 0, it is equivalant to Pow(x, y).
 // If x == y == 0 or y < 0, a runtime panic occurs.
 func PowMod[T constraints.Integer](x, y, m T) T {
-	if m == 0 {
-		return Pow(x, y)
-	}
-
-	if x == 0 && y == 0 {
-		panic("0**0 is not defined")
-	}
 	if y < 0 {
 		panic("negative exponent")
+	}
+	if m == 0 {
+		panic("modulo by zero")
 	}
 
 	switch x {
 	case 0:
 		return 0
 	case 1:
-		return 1
+		if m == 1 {
+			return 0
+		} else {
+			return 1
+		}
 	case 2:
 		return (1 << y) % m
 	}
@@ -211,6 +211,9 @@ func Sqrt[T constraints.Integer](x T) T {
 
 	if x == 0 {
 		return 0
+	}
+	if x == 1 {
+		return 1
 	}
 
 	// Taken from WikiPedia: https://en.wikipedia.org/wiki/Integer_square_root#Using_only_integer_division
