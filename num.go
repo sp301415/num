@@ -52,7 +52,7 @@ func CmpAbs[T constraints.Integer](x, y T) int {
 	return 0
 }
 
-// Pow returns x**y. If x == y == 0 or y < 0, a runtime panic occurs.
+// Pow returns x**y. If y < 0, a runtime panic occurs.
 func Pow[T constraints.Integer](x, y T) T {
 	if x == 0 && y == 0 {
 		return 1
@@ -82,14 +82,13 @@ func Pow[T constraints.Integer](x, y T) T {
 }
 
 // PowMod returns x**y mod m.
+//
 // If m == 0, it is equivalant to Pow(x, y).
-// If x == y == 0 or y < 0, a runtime panic occurs.
+//
+// If y < 0, a runtime panic occurs.
 func PowMod[T constraints.Integer](x, y, m T) T {
 	if y < 0 {
 		panic("negative exponent")
-	}
-	if m == 0 {
-		panic("modulo by zero")
 	}
 
 	switch x {
@@ -119,7 +118,9 @@ func PowMod[T constraints.Integer](x, y, m T) T {
 // GCD returns the greatest common divisor of x and y.
 //
 // If x == y == 0, GCD returns 0.
+//
 // If x == 0 and y != 0, GCD returns |y|.
+//
 // If x != 0 and y == 0, GCD returns |x|.
 func GCD[T constraints.Integer](x, y T) T {
 	x = Abs(x)
