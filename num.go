@@ -52,10 +52,10 @@ func CmpAbs[T constraints.Integer](x, y T) int {
 	return 0
 }
 
-// Pow returns x**y. If x == y == 0 or y < 0, a runtime panic occurs.
+// Pow returns x**y. If y < 0, a runtime panic occurs.
 func Pow[T constraints.Integer](x, y T) T {
 	if x == 0 && y == 0 {
-		panic("0**0 is not defined")
+		return 1
 	}
 	if y < 0 {
 		panic("negative exponent")
@@ -82,16 +82,11 @@ func Pow[T constraints.Integer](x, y T) T {
 }
 
 // PowMod returns x**y mod m.
+//
 // If m == 0, it is equivalant to Pow(x, y).
-// If x == y == 0 or y < 0, a runtime panic occurs.
+//
+// If y < 0, a runtime panic occurs.
 func PowMod[T constraints.Integer](x, y, m T) T {
-	if m == 0 {
-		return Pow(x, y)
-	}
-
-	if x == 0 && y == 0 {
-		panic("0**0 is not defined")
-	}
 	if y < 0 {
 		panic("negative exponent")
 	}
@@ -100,7 +95,11 @@ func PowMod[T constraints.Integer](x, y, m T) T {
 	case 0:
 		return 0
 	case 1:
-		return 1
+		if m == 1 {
+			return 0
+		} else {
+			return 1
+		}
 	case 2:
 		return (1 << y) % m
 	}
@@ -119,7 +118,9 @@ func PowMod[T constraints.Integer](x, y, m T) T {
 // GCD returns the greatest common divisor of x and y.
 //
 // If x == y == 0, GCD returns 0.
+//
 // If x == 0 and y != 0, GCD returns |y|.
+//
 // If x != 0 and y == 0, GCD returns |x|.
 func GCD[T constraints.Integer](x, y T) T {
 	x = Abs(x)
@@ -211,6 +212,9 @@ func Sqrt[T constraints.Integer](x T) T {
 
 	if x == 0 {
 		return 0
+	}
+	if x == 1 {
+		return 1
 	}
 
 	// Taken from WikiPedia: https://en.wikipedia.org/wiki/Integer_square_root#Using_only_integer_division
